@@ -3,6 +3,7 @@ package alerryia.memory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.widget.ImageButton
 import kotlin.random.Random
 
@@ -65,24 +66,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun reset() {
-        shuffleImages()
-
-        for (button in playGround) {
-            button.setImageResource(R.drawable.none)
-            button.isEnabled = true
-        }
-
         guessed = 0
         lastIndex = -1
+
+        for (button in playGround) {
+            button.isEnabled = true
+            button.setImageResource(R.drawable.none)
+        }
+
+        shuffleImages()
     }
 
-    private fun lockAll(unlock: Boolean) {
+    private fun unlockAll(unlock: Boolean) {
         for (button in playGround) {
             button.isEnabled = unlock
         }
     }
 
-    fun onCellClick(button: ImageButton) {
+    private fun onCellClick(button: ImageButton) {
         val currentIndex = playGround.indexOf(button)
 
         if (lastIndex == -1) {
@@ -98,13 +99,13 @@ class MainActivity : AppCompatActivity() {
         } else if (playImages[currentIndex] != playImages[lastIndex]) {
 
             button.setImageResource(playImages[currentIndex])
-            lockAll(false)
+            unlockAll(false)
             Handler().postDelayed({
                 button.setImageResource(R.drawable.none)
                 playGround[lastIndex].setImageResource(R.drawable.none)
                 lastIndex = -1
-                lockAll(true)
-            }, 1000)
+                unlockAll(true)
+            }, 500)
 
         } else {
             guessed++
@@ -113,9 +114,16 @@ class MainActivity : AppCompatActivity() {
             button.isEnabled = false
             playGround[lastIndex].isEnabled = false
 
-            if (guessed == 9) reset()
+            if (guessed == playGround.size / 2) {
 
-            lastIndex = -1
+                Handler().postDelayed({
+                    reset()
+                }, 1000)
+
+            } else {
+                lastIndex = -1
+            }
+
         }
     }
 }
