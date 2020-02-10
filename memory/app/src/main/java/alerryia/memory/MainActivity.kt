@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
 
     var playGround = emptyArray<ImageButton>()
     var playImages = emptyArray<Int>()
-    var guessed = 0
+    var notGuessed = mutableListOf<Int>()
     var lastIndex = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +66,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun reset() {
-        guessed = 0
+        for (i in playGround.indices) {
+            notGuessed.add(i)
+        }
+
         lastIndex = -1
 
         for (button in playGround) {
@@ -78,8 +81,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun unlockAll(unlock: Boolean) {
-        for (button in playGround) {
-            button.isEnabled = unlock
+        for (i in notGuessed) {
+            playGround[i].isEnabled = unlock
         }
     }
 
@@ -108,13 +111,14 @@ class MainActivity : AppCompatActivity() {
             }, 500)
 
         } else {
-            guessed++
+            notGuessed.remove(currentIndex)
+            notGuessed.remove(lastIndex)
 
             button.setImageResource(playImages[currentIndex])
             button.isEnabled = false
             playGround[lastIndex].isEnabled = false
 
-            if (guessed == playGround.size / 2) {
+            if (notGuessed.isEmpty()) {
 
                 Handler().postDelayed({
                     reset()
