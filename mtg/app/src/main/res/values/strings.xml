@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Magic: The Gathering</string>
+    <string name="list_fragment_button_text">Load</string>
+    <string name="image_content_description">No card image.</string>
+    <string name="name_label">Name:</string>
+    <string name="set_label">Set:</string>
+    <string name="number_label">Number:</string>
+    <string name="mana_cost_label">Mana cost:</string>
+    <string name="type_label">Type:</string>
+    <string name="rarity_label">Rarity:</string>
+    <string name="fail_loading">Failed to load cards.</string>
+</resources>
