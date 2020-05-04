@@ -1,6 +1,7 @@
 package alerryia.mtg
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,7 +15,12 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.Exception
+import java.net.URL
 
 class CardsAdapter(
     private val context: Context,
@@ -40,7 +46,15 @@ class CardsAdapter(
 
         holder.itemView.setOnClickListener { onItemClickListener.onItemClick(card) }
 
-        try {
+        GlobalScope.launch {
+            val stream = URL(card.imageUrl).openStream()
+            val bitmap = BitmapFactory.decodeStream(stream)
+            withContext(Dispatchers.Main) {
+                holder.image.setImageBitmap(bitmap)
+            }
+            stream.close()
+        }
+        /*try {
             Glide.with(context)
                 .load(card.imageUrl)
                 .placeholder(R.drawable.download)
@@ -49,7 +63,7 @@ class CardsAdapter(
                 .into(holder.image)
         } catch (e: Exception) {
             Log.d("Glide", "Failed to load image", e)
-        }
+        }*/
     }
 
     interface OnItemClickListener {
